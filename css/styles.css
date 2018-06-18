@@ -1,0 +1,15 @@
+.container{margin-top:75px;}
+.tab-content{padding-top:5%;}
+.logout-container { display: none; }
+.error-msg {
+    color: red;
+    font-size: 12px;
+}
+.error-msgs {
+    color: red;
+    font-size: 14px;
+}
+h2 {
+    color: #fff;
+}
+.login-container { display: none; }
