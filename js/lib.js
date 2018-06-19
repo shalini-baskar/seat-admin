@@ -83,6 +83,7 @@
 		});
 		//append seat
 		$('#floor-value').on('change',function(){
+
 			$('.seat-select').attr("size","5");
 
 			$('#seat-selected').val("");
