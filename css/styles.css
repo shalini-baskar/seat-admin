@@ -1,6 +1,6 @@
 .container{margin-top:75px;}
 .tab-content{padding-top:5%;}
-.logout-container { display: none; }
+.logout-container { display: none; padding-bottom: 5%; }
 .error-msg {
     color: red;
     font-size: 12px;

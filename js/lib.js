@@ -10,6 +10,12 @@
 	//authentication start
 	var email, password;
 	
+	$('#login-enter').bind('keypress', function(e) {
+		var key = e.which;
+		if (key == 13) {
+			$(".login").trigger('click');
+		}
+	});
 	
 
 	$('.login').click(function() {
@@ -64,8 +70,7 @@
     firebase.database().ref('/Floors').once('value').then(function(snapshot) {
 		data = snapshot.val();
 		floor_counts = []; 
-		snapshot.forEach(function(childSnapshot) {
-			
+		snapshot.forEach(function(childSnapshot) {	
 			var item = childSnapshot.val();
 			item.key = childSnapshot.key;
 			floor_counts.push(item.key);	
@@ -76,8 +81,12 @@
 		floor_counts.forEach(function(entry) {
 			$('#floor-value').append($('<option>', { value: entry, text: entry }));
 		});
-
+		//append seat
 		$('#floor-value').on('change',function(){
+			$('.seat-select').attr("size","5");
+
+			$('#seat-selected').val("");
+
 			$('#seat-value').html('<option selected>Seat Value...</option>');
 			currentFloor = $(this).val();
 			setSeat(data[currentFloor])
@@ -93,9 +102,21 @@
 				$('#seat-value').append($('<option>', { value: entry, text: entry }));
 			});
 		}
+		//search filter
+		$('#seat-selected').on('keyup',function() {
+			var value= $(this).val().toLowerCase();
+			$('#seat-value option').filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		});
+
+		// append datas
 		$('#seat-value').on('change',function(){
 			var seat = $(this).val();
 			var details = data[currentFloor][seat];
+
+			$('#seat-selected').val("");
+			$('#seat-selected').val(seat);
 
 			$('#username').val(details['details'].name);
 			$('#email').val(details['details'].email);
@@ -103,10 +124,9 @@
 			$('#department').val(details.department);
 			$('#url').val(details['details'].url);
 			$('#skypeid').val(details['details'].skypeid);
-			//console.log($('#department').val(details.classification))
 			//console.log(data[currentFloor][seat])
 		});
-		// append seat
+		
 		
 	});
     	
@@ -180,16 +200,30 @@
 		  if( !errors ) {
 			console.log("submitted");
 			firebase.database().ref('/Floors/' + floor_no + '/' + seat_no +'/details/').set({email: email, name: username, mobile: mobile, department: department, url: url, skypeid: skypeid});
+			//empty field value after submitting
+
+			$('.form-group input').val("");
+			$('select').prop('selectedIndex',0);
+			$('#seat-value option').not(':first-child').remove();
+			$('.seat-select').removeAttr("size");
+			location.reload();
 		} 
- 
+		
+	/* 	
+		var playersRef = firebase.database().ref('/Floors/')
+		playersRef.on("child-changed", function(snapshot) {
+			var player = snapshot.val();
+			console.log(snapshot.email);
+		})
+  */
 });
 
 
-	function stringifyNumber(n) {
+/* 	function stringifyNumber(n) {
 	  if (n < 20) return special[n];
 	  if (n%10 === 0) return deca[Math.floor(n/10)-2] + 'ieth';
 	  return deca[Math.floor(n/10)-2] + 'y-' + special[n%10];
 	}
-	
+	 */
 })(jQuery);
 
